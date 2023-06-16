@@ -1,0 +1,7 @@
+#Folder
+/build
+/node_modules
+
+#Files
+*.env
+test.png
