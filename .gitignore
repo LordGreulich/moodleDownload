@@ -1,6 +1,7 @@
 #Folder
 /build
 /node_modules
+/moodleDownloadDB
 
 #Files
 *.env

@@ -1,6 +1,7 @@
 import { ElementHandle } from 'puppeteer';
 import puppeteer from 'puppeteer-core';
 import { ListFormat } from 'typescript';
+import PouchDB from 'pouchdb';
 require('dotenv').config();
 
 interface klass {
@@ -15,6 +16,10 @@ interface klass {
         return;
     }
 
+    let pouchDB = new PouchDB('moodleDownloadDB');
+    pouchDB.info().then( function (info) {
+        console.log(info);
+    });
     const browser = await puppeteer.launch({
         executablePath: '/usr/bin/chromium',
     });
@@ -23,14 +28,17 @@ interface klass {
 
     await page.goto('https://moodle.dhbw.de/');
 
-    const elements = await page.$x('//*[@id="button-Studierende ---  Dozenten/-innen --- Andere"]');
-    await elements[0].click();
+    await page.$$('input').then( element => {
+        element[2].click();
+    });
     await page.waitForNavigation();
 
     let usernameElements = await page.$$('input');
     await usernameElements[0].type('grauel.leo.a22@dh-karlsruhe.de');
     await usernameElements[1].type(process.env.password!);
-    (await page.$x('//*[@id="submit_button"]')).at(0)?.click();
+    await page.$$('button').then( element => {
+        element[0].click();
+    });
     await page.waitForNavigation();
 
     const allClassesLinks = await page.$$('#inst5049 > div.content > ul a');
